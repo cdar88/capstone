@@ -1,0 +1,24 @@
+# Drop rows with `RENTED_BIKE_COUNT` column == NA
+drop_rbc_rows <- bike_sharing_df %>%
+    drop_na(RENTED_BIKE_COUNT)
+
+# Print the dataset dimension again after those rows are dropped
+dim(drop_rbc_rows)
+
+bike_sharing_df %>% 
+                filter(is.na(TEMPERATURE))
+                
+# Calculate the summer average temperature
+avg_sumr_temp <- drop_rbc_rows %>%
+    summarize(mean = mean(TEMPERATURE, na.rm = TRUE))
+
+# Impute missing values for TEMPERATURE column with summer average temperature
+replace_nas <- drop_rbc_rows %>%
+    replace_na(list(TEMPERATURE = avg_sumr_temp))
+    
+# Print the summary of the dataset again to make sure no missing values in all columns
+summary(replace_nas)
+dim(replace_nas)
+
+# Save the dataset as `seoul_bike_sharing.csv`
+write.csv(replace_nas, file = "seoul_bike_sharing.csv", row.names = FALSE)
